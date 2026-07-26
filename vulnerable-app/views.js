@@ -89,7 +89,7 @@ function renderItem({ session, item, comments, flash }) {
     <li class="comment">
       <span class="author">${esc(c.author)}</span>
       <span class="when">${esc(c.created)}</span>
-      <div class="cbody">${c.body}</div>
+      <div class="cbody">${esc(c.body)}</div>
     </li>`).join('');
 
   const commentForm = session
@@ -154,7 +154,7 @@ function renderRegister({ session, error }) {
   });
 }
 
-function renderWallet({ session, me, transfers, flash }) {
+function renderWallet({ session, me, transfers, flash, csrf }) {
   const history = transfers.length
     ? transfers.map(t => `<li>${esc(t.from_user)} → ${esc(t.to_user)}: <strong>${esc(t.amount)}</strong> credits <span class="when">${esc(t.created)}</span></li>`).join('')
     : '<li class="muted">No transfers yet.</li>';
@@ -170,6 +170,7 @@ function renderWallet({ session, me, transfers, flash }) {
 
         <h2>Send credits</h2>
         <form method="POST" action="/wallet/transfer" class="transferform">
+          <input type="hidden" name="_csrf" value="${esc(csrf)}">
           <label>To (username) <input name="to" required></label>
           <label>Amount <input name="amount" type="number" min="1" required></label>
           <button>Send</button>
